@@ -7,7 +7,7 @@
     <script>
         async function checkConnection() {
             try {
-                const response = await fetch('http://a1989368c85d74825822a8aa9fc5b24d-1901419839.us-east-1.elb.amazonaws.com/connect'); // Removed extra slash
+                const response = await fetch('http://backend:5000/');
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }
@@ -21,6 +21,7 @@
     </script>
 </head>
 <body>
+    <h1>Check Backend </h1>
     <h1>Check Backend Connection</h1>
     <button onclick="checkConnection()">Connect to Backend</button>
 </body>
