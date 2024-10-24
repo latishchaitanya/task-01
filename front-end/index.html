@@ -7,7 +7,7 @@
     <script>
         async function checkConnection() {
             try {
-                const response = await fetch('http://ip-10-0-1-159.ec2.internal :30001');
+                const response = await fetch('https://ac792a8a8b7b944c69d6a379f1a30359-1213013001.us-east-1.elb.amazonaws.com/5000');
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }
