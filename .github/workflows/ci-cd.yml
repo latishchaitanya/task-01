@@ -29,12 +29,14 @@ jobs:
 
       - name: Build and push Docker image
         run: |
+          # Get the current date and time in the format YYYYMMDD-HHMM
+          TAG=$(date +'%Y%m%d-%H%M')
           # Build the image
           docker build -t my-frontend ./front-end
-          # Tag the image as latest
-          docker tag my-frontend:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/test/frontend:latest
-          # Push the latest image
-          docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/test/frontend:latest
+          # Tag the image with the current date and time
+          docker tag my-frontend:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/test/frontend:$TAG
+          # Push the tagged image
+          docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/test/frontend:$TAG
       
       - name: Set up kubeconfig
         run: |
@@ -42,5 +44,6 @@ jobs:
       
       - name: Update Kubernetes Deployment
         run: |
-          kubectl set image deployment/frontend frontend=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/test/frontend:latest --namespace my-app
+          # Use the latest tag from the previous step
+          kubectl set image deployment/frontend frontend=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/test/frontend:$TAG --namespace my-app
           kubectl rollout status deployment/frontend --namespace my-app
