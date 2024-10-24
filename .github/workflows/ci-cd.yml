@@ -35,7 +35,11 @@ jobs:
           docker tag my-frontend:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/test/frontend:latest
           # Push the latest image
           docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/test/frontend:latest
-
+      
+      - name: Set up kubeconfig
+        run: |
+          aws eks update-kubeconfig --name your-cluster-name --region ${{ secrets.AWS_REGION }}
+      
       - name: Update Kubernetes Deployment
         run: |
           kubectl set image deployment/frontend frontend=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/test/frontend:latest --namespace my-app
