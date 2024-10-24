@@ -34,9 +34,11 @@ jobs:
       - name: Build and push Docker image
         run: |
           docker build -t my-frontend ./front-end
-          docker tag my-frontend:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/test/frontend:${{ env.VERSION }}
+          docker tag my-frontend:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/test/frontend:latest
           docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/test/frontend:${{ env.VERSION }}
         # Tag the image as latest
+        # docker tag my-frontend:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/test/frontend:${{ env.VERSION }}
+
         # docker tag my-frontend:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/test/frontend:latest
          
       # - name: Update Kubernetes Deployment
