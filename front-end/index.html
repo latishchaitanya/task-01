@@ -7,7 +7,7 @@
     <script>
         async function checkConnection() {
             try {
-                const response = await fetch('http://backend:5000/');
+                const response = await fetch('http://ip-10-0-1-159.ec2.internal :30001/api');
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }
