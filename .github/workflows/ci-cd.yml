@@ -38,7 +38,7 @@ jobs:
       
       - name: Set up kubeconfig
         run: |
-          aws eks update-kubeconfig --name your-cluster-name --region ${{ secrets.AWS_REGION }}
+          aws eks update-kubeconfig --name my-cluster --region ${{ secrets.AWS_REGION }}
       
       - name: Update Kubernetes Deployment
         run: |
