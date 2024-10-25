@@ -2,8 +2,8 @@ version: 0.2
 
 env:
   variables:
-    AWS_ACCOUNT_ID: "<your_account_id>"
-    AWS_REGION: "<your_region>"
+    AWS_ACCOUNT_ID: "010438506754"
+    AWS_REGION: "us-east-1"
     ECR_REPOSITORY: "test/frontend"
     EKS_CLUSTER_NAME: "my-cluster"
     K8S_NAMESPACE: "my-app"
