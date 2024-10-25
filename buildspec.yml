@@ -1,0 +1,41 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      docker: 20  # Specify Docker version
+    commands:
+      - echo Installing AWS CLI
+      - apt-get update
+      - apt-get install -y awscli
+      - echo AWS CLI installed successfully
+  pre_build:
+    commands:
+      - echo Logging in to Amazon ECR
+      - $(aws ecr get-login --no-include-email --region $AWS_REGION)
+  build:
+    commands:
+      - echo Building the Docker image
+      - TAG=$(date +'%Y%m%d-%H%M')
+      - echo Building image with tag $TAG
+      - docker build -t my-frontend ./front-end
+      - docker tag my-frontend:latest $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/test/frontend:$TAG
+      - echo Pushing the Docker image
+      - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/test/frontend:$TAG
+  post_build:
+    commands:
+      - echo Updating Kubernetes deployment
+      - aws eks update-kubeconfig --name my-cluster --region $AWS_REGION
+      - kubectl set image deployment/frontend frontend=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/test/frontend:$TAG --namespace my-app
+      - kubectl rollout status deployment/frontend --namespace my-app
+
+environment_variables:
+  plaintext:
+    AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+    AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+    AWS_REGION: ${AWS_REGION}
+    AWS_ACCOUNT_ID: ${AWS_ACCOUNT_ID}
+
+artifacts:
+  files:
+    - '**/*'  # You can specify files or directories to include in the artifacts
