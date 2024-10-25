@@ -4,7 +4,7 @@ env:
   variables:
     AWS_ACCOUNT_ID: "010438506754"
     AWS_REGION: "us-east-1"
-    ECR_REPOSITORY: "test/backend"
+    ECR_REPOSITORY: "test/frontend"
     EKS_CLUSTER_NAME: "my-cluster"
     K8S_NAMESPACE: "my-app"
 
@@ -45,7 +45,7 @@ post_build:
   commands:
     # - TEMP_DEPLOYMENT=$(cat ./backenddeployment.yaml)
     # - MODIFIED_DEPLOYMENT=$(echo "$TEMP_DEPLOYMENT") | sed 's/(image: .*:\).*|\1$VERSION/g')
-    - template=$(cat "backenddeployment.yaml" | sed "s/latest/$VERSION/g")
+    - template=$(cat "frontenddeployment.yaml" | sed "s/latest/$VERSION/g")
     - echo "$template" | kubectl apply -f -
 
 
