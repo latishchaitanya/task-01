@@ -18,18 +18,18 @@ phases:
     commands:
       - echo Logging in to Amazon ECR
       - $(aws ecr get-login --no-include-email --region $AWS_REGION)
-build:
-  commands:
-    - echo Building the Docker image
-    - TAG=$(date +'%Y%m%d-%H%M')
-    - echo "AWS_ACCOUNT_ID: $AWS_ACCOUNT_ID"
-    - echo "AWS_REGION: $AWS_REGION"
-    - echo "TAG: $TAG"
-    - docker build -t my-frontend ./front-end
-    - echo Tagging the Docker image
-    - docker tag my-frontend:latest $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/test/frontend:$TAG
-    - echo Pushing the Docker image
-    - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/test/frontend:$TAG
+  build:
+    commands:
+      - echo Building the Docker image
+      - TAG=$(date +'%Y%m%d-%H%M')
+      - echo "AWS_ACCOUNT_ID: $AWS_ACCOUNT_ID"
+      - echo "AWS_REGION: $AWS_REGION"
+      - echo "TAG: $TAG"
+      - docker build -t my-frontend ./front-end
+      - echo Tagging the Docker image
+      - docker tag my-frontend:latest $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/test/frontend:$TAG
+      - echo Pushing the Docker image
+      - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/test/frontend:$TAG
   post_build:
     commands:
       - echo Updating Kubernetes deployment
