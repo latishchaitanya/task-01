@@ -34,13 +34,6 @@ phases:
       - kubectl set image deployment/frontend frontend=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/test/frontend:$TAG --namespace my-app
       - kubectl rollout status deployment/frontend --namespace my-app
 
-environment_variables:
-  plaintext:
-    AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
-    AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
-    AWS_REGION: ${AWS_REGION}
-    AWS_ACCOUNT_ID: ${AWS_ACCOUNT_ID}
-
 artifacts:
   files:
     - '**/*'  # Specify files or directories to include in the artifacts
