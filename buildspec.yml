@@ -25,14 +25,14 @@ phases:
       - echo "AWS_REGION: $AWS_REGION"
       - docker build -t my-frontend ./front-end
       - echo Tagging the Docker image
-      - docker tag my-frontend:latest $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/test/frontend:$latest
+      - docker tag my-frontend:latest $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/test/frontend:latest  # Use 'latest' tag
       - echo Pushing the Docker image
-      - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/test/frontend:$latest
+      - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/test/frontend:latest  # Use 'latest' tag
   post_build:
     commands:
       - echo Updating Kubernetes deployment
       - aws eks update-kubeconfig --name my-cluster --region $AWS_REGION
-      - kubectl set image deployment/frontend frontend=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/test/frontend:$latest --namespace my-app
+      - kubectl set image deployment/frontend frontend=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/test/frontend:latest --namespace my-app  # Use 'latest' tag
       - kubectl rollout status deployment/frontend --namespace my-app
 
 artifacts:
