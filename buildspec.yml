@@ -9,6 +9,11 @@ phases:
       - apt-get update
       - apt-get install -y awscli
       - echo AWS CLI installed successfully
+      - echo Installing kubectl
+      - curl -LO "https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl"
+      - chmod +x ./kubectl
+      - mv ./kubectl /usr/local/bin/kubectl
+      - echo kubectl installed successfully
   pre_build:
     commands:
       - echo Logging in to Amazon ECR
@@ -38,4 +43,4 @@ environment_variables:
 
 artifacts:
   files:
-    - '**/*'  # You can specify files or directories to include in the artifacts
+    - '**/*'  # Specify files or directories to include in the artifacts
