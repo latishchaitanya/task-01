@@ -35,9 +35,9 @@ phases:
       - echo Reading version from file
       - VERSION=$(cat version)
       - echo Building the Docker image
-      - docker build -t my-backend ./back-end
+      - docker build -t my-frontend ./front-end
       - echo Tagging the Docker image with version $VERSION
-      - docker tag my-backend:latest $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPOSITORY:$VERSION
+      - docker tag my-frontend:latest $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPOSITORY:$VERSION
       - echo Pushing the Docker image
       - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPOSITORY:$VERSION
 
