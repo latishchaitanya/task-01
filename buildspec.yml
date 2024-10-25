@@ -3,10 +3,11 @@ version: 0.2
 phases:
   install:
     commands:
-      - echo Installing AWS CLI
-      - curl "https://d1wnz8sc8e1vtq.cloudfront.net/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-      - unzip awscliv2.zip
-      - sudo ./aws/install
+      - echo Installing pip
+      - curl -O https://bootstrap.pypa.io/get-pip.py
+      - python3 get-pip.py
+      - echo Installing AWS CLI using pip
+      - pip install awscli
       - echo AWS CLI installed successfully
       - echo Installing kubectl
       - curl -LO "https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl"
