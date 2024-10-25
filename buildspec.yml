@@ -1,5 +1,13 @@
 version: 0.2
 
+env:
+  variables:
+    AWS_ACCOUNT_ID: "010438506754"
+    AWS_REGION: "us-east-1"
+    ECR_REPOSITORY: "test/frontend"
+    EKS_CLUSTER_NAME: "my-cluster"
+    K8S_NAMESPACE: "my-app"
+
 phases:
   install:
     commands:
@@ -25,15 +33,15 @@ phases:
       - echo "AWS_REGION: $AWS_REGION"
       - docker build -t my-frontend ./front-end
       - echo Tagging the Docker image
-      - docker tag my-frontend:latest $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/test/frontend:latest  # Use 'latest' tag
+      - docker tag my-frontend:latest $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPOSITORY:latest
       - echo Pushing the Docker image
-      - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/test/frontend:latest  # Use 'latest' tag
+      - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPOSITORY:latest
   post_build:
     commands:
       - echo Updating Kubernetes deployment
-      - aws eks update-kubeconfig --name my-cluster --region $AWS_REGION
-      - kubectl set image deployment/frontend frontend=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/test/frontend:latest --namespace my-app  # Use 'latest' tag
-      - kubectl rollout status deployment/frontend --namespace my-app
+      - aws eks update-kubeconfig --name $EKS_CLUSTER_NAME --region $AWS_REGION
+      - kubectl set image deployment/frontend frontend=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPOSITORY:latest --namespace $K8S_NAMESPACE
+      - kubectl rollout status deployment/frontend --namespace $K8S_NAMESPACE
 
 artifacts:
   files:
