@@ -4,7 +4,7 @@ env:
   variables:
     AWS_ACCOUNT_ID: "010438506754"
     AWS_REGION: "us-east-1"
-    ECR_REPOSITORY: "test/frontend"
+    ECR_REPOSITORY: "test/backend"
     EKS_CLUSTER_NAME: "my-cluster"
     K8S_NAMESPACE: "my-app"
 
@@ -22,6 +22,7 @@ phases:
       - chmod +x ./kubectl
       - mv ./kubectl /usr/local/bin/kubectl
       - echo kubectl installed successfully
+
   pre_build:
     commands:
       - aws --version
@@ -31,20 +32,23 @@ phases:
 
   build:
     commands:
+      - echo Reading version from file
+      - VERSION=$(cat version)
       - echo Building the Docker image
-      - TAG=$(date +'%Y%m%d-%H%M%S')
-      - docker build -t my-frontend ./front-end
-      - echo Tagging the Docker image
-      - docker tag my-frontend:latest $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPOSITORY:$TAG
+      - docker build -t my-backend ./back-end
+      - echo Tagging the Docker image with version $VERSION
+      - docker tag my-backend:latest $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPOSITORY:$VERSION
       - echo Pushing the Docker image
-      - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPOSITORY:$TAG
-  post_build:
-    commands:
-      - echo Updating Kubernetes deployment
-      - aws eks update-kubeconfig --name $EKS_CLUSTER_NAME --region $AWS_REGION
-      - kubectl set image deployment/frontend frontend=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPOSITORY:$TAG --namespace $K8S_NAMESPACE
-      - kubectl rollout status deployment/frontend --namespace $K8S_NAMESPACE
+      - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPOSITORY:$VERSION
+
+post_build:
+  commands:
+    # - TEMP_DEPLOYMENT=$(cat ./backenddeployment.yaml)
+    # - MODIFIED_DEPLOYMENT=$(echo "$TEMP_DEPLOYMENT") | sed 's/(image: .*:\).*|\1$VERSION/g')
+    - template=$(cat "backenddeployment.yaml" | sed "s/latest/$VERSION/g")
+    - echo "$template" | kubectl apply -f -
+
 
 artifacts:
   files:
-    - '**/*'  # Specify files or directories to include in the artifacts
+    - '**/*'
